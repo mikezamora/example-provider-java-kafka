@@ -1,0 +1,78 @@
+{
+  "consumer": {
+    "name": "pactflow-example-consumer-java-kafka"
+  },
+  "provider": {
+    "name": "pactflow-example-provider-java-kafka"
+  },
+  "messages": [
+    {
+      "description": "a product created event",
+      "metaData": {
+        "kafka_topic": "products",
+        "contentType": "application/json"
+      },
+      "contents": {
+        "name": "product name",
+        "id": "5cc989d0-d800-434c-b4bb-b1268499e850",
+        "type": "product series",
+        "event": "CREATED",
+        "version": "v1"
+      },
+      "matchingRules": {
+        "body": {
+          "$.name": {
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ],
+            "combine": "AND"
+          },
+          "$.type": {
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ],
+            "combine": "AND"
+          },
+          "$.id": {
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ],
+            "combine": "AND"
+          },
+          "$.version": {
+            "matchers": [
+              {
+                "match": "regex",
+                "regex": "v[a-zA-z0-9]+"
+              }
+            ],
+            "combine": "AND"
+          },
+          "$.event": {
+            "matchers": [
+              {
+                "match": "regex",
+                "regex": "^(CREATED|UPDATED|DELETED)$"
+              }
+            ],
+            "combine": "AND"
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "3.0.0"
+    },
+    "pact-jvm": {
+      "version": "4.0.10"
+    }
+  }
+}

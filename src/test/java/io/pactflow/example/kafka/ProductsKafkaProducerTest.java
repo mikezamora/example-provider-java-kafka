@@ -21,7 +21,7 @@ import org.springframework.messaging.Message;
 import java.util.HashMap;
 
 @Provider("pactflow-example-provider-java-kafka")
-@PactBroker(scheme = "https", host = "${PACT_BROKER_HOST}", tags = { "master", "prod" }, authentication = @PactBrokerAuth(token = "${PACT_BROKER_TOKEN}"))
+@PactBroker(scheme = "https", host = "${PACT_BROKER_HOST}", tags = { "master", "test", "prod" }, authentication = @PactBrokerAuth(token = "${PACT_BROKER_TOKEN}"))
 public class ProductsKafkaProducerTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(ProductsKafkaProducerTest.class);
 

@@ -44,7 +44,32 @@ dependencies {
 tasks {
 	test {
 		useJUnitPlatform()
+
+		if (environment["pactPublishResults"] == "true" || true) {
+			environment("pact.provider.version", getGitHash())
+			systemProperty("pact.provider.tag", getGitBranch())
+			systemProperty("pact.verifier.publishResults", "true")
+		}
 	}
+
+//	val copyPacts by creating(Copy::class) {
+//		description = "Copies the generated Pact json file to the provider resources directory"
+//
+//		from("/Users/mzamora/projects/pactio/example-consumer-java-kafka/build/pacts")
+//		into("../provider/src/test/resources/pacts/")
+//	}
+}
+
+
+fun getGitHash(): String {
+	val process = Runtime.getRuntime().exec("git rev-parse --short HEAD")
+	val sb: StringBuilder = StringBuilder()
+	while (true) {
+		val char = process.inputStream.read()
+		if (char == -1) break
+		sb.append(char.toChar())
+	}
+	return sb.toString().trim()
 }
 
 fun getGitBranch(): String {
@@ -58,17 +83,22 @@ fun getGitBranch(): String {
 	return sb.toString().trim()
 }
 
+
 pact {
-
-    broker {
-        pactBrokerUrl = System.getenv("PACT_BROKER_BASE_URL")
-        pactBrokerToken = System.getenv("PACT_BROKER_TOKEN")
-    }
-	/** Configs to publish to Pactbroker **/
-	publish {
-		pactDirectory = "build/pacts"
-		tags = listOf(getGitBranch(), "test", "prod")
-		consumerVersion = "0.0.2-SNAPSHOT"
+	serviceProviders {
+//		create("provider1") {
+//
+//			providerVersion = getGitHash()
+//			hasPactsFromPactBroker(
+//				mapOf("authentication" to listOf("Bearer", "wGb_AxvRRLCkrXgO_WrbWQ")),
+//				"mzamorahappymoney.pactflow.io")
+////			var tags = listOf(getGitBranch(), "test", "prod")
+//		}
 	}
-
+	publish {
+		pactBrokerUrl = "https://mzamorahappymoney.pactflow.io"
+		pactBrokerToken = "wGb_AxvRRLCkrXgO_WrbWQ"
+		tags = listOf(getGitBranch(), "test", "prod")
+	}
 }
+
