@@ -28,31 +28,27 @@ import java.util.HashMap;
 //@ExtendWith(PactVerificationSpringProvider.class)
 @ExtendWith(SpringExtension.class)
 @Provider("pactflow-example-provider-java-kafka")
-@PactBroker(consumerVersionSelectors={ @VersionSelector(tag = "master, prod, test")})
+@PactBroker//(consumerVersionSelectors={ @VersionSelector(tag = "master, prod, test")})
 @SpringBootTest()
 public class ProductsKafkaProducerTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(ProductsKafkaProducerTest.class);
-
-  @Value("${pactbroker.host}")
-  String testName = "";
 
   @BeforeEach
   void before(PactVerificationContext context) {
     context.setTarget(new AmpqTestTarget());
 
-    System.out.println("TRAVIS_COMMIT" + System.getenv("TRAVIS_COMMIT"));
-    System.setProperty("pact.provider.version",
-        System.getenv("TRAVIS_COMMIT") == null ? "" : System.getenv("TRAVIS_COMMIT"));
-    System.setProperty("pact.provider.tag",
-        System.getenv("TRAVIS_BRANCH") == null ? "" : System.getenv("TRAVIS_BRANCH"));
-    System.setProperty("pact.verifier.publishResults",
-        System.getenv("PACT_BROKER_PUBLISH_VERIFICATION_RESULTS") == null ? "false" : "true");
+//    System.out.println("TRAVIS_COMMIT" + System.getenv("TRAVIS_COMMIT"));
+//    System.setProperty("pact.provider.version",
+//        System.getenv("TRAVIS_COMMIT") == null ? "" : System.getenv("TRAVIS_COMMIT"));
+//    System.setProperty("pact.provider.tag",
+//        System.getenv("TRAVIS_BRANCH") == null ? "" : System.getenv("TRAVIS_BRANCH"));
+//    System.setProperty("pact.verifier.publishResults", System.getenv("PACT_BROKER_PUBLISH_VERIFICATION_RESULTS") == null ? "false" : "true");
   }
 
   @TestTemplate
 //  @ExtendWith(PactVerificationInvocationContextProvider.class)
   @ExtendWith(PactVerificationSpringProvider.class)
-  void testTemplate(PactVerificationContext context) {
+  void pactVerificationTestTemplate(PactVerificationContext context) {
     context.verifyInteraction();
   }
 

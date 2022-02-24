@@ -31,8 +31,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.kafka:spring-kafka")
-	testImplementation("au.com.dius:pact-jvm-provider-junit5:4.0.10")
-	testImplementation("au.com.dius.pact.provider:junit5spring:4.3.5")
+	testImplementation("au.com.dius.pact.provider:junit5:4.1.34")
+	testImplementation("au.com.dius.pact.provider:junit5spring:4.1.34")
 //	testImplementation("au.com.dius:pact-jvm-provider-spring:4.0.10")
 
 	runtimeOnly("com.h2database:h2")
@@ -46,7 +46,7 @@ tasks {
 //		systemProperty("pactbroker.host", "mzamorahappymoney.pactflow.io")
 		if (environment["pactPublishResults"] == "true" || true) {
 			systemProperty("pact.provider.version", getGitHash())
-			systemProperty("pact.provider.tag", getGitBranch())
+			systemProperty("pact.provider.tag", "${getGitBranch()}, test, prod" )
 			systemProperty("pact.verifier.publishResults", "true")
 		}
 	}
@@ -83,24 +83,24 @@ fun getGitBranch(): String {
 }
 
 
-pact {
-	serviceProviders {
-		create("pactflow-example-provider-java-kafka") {
-			providerVersion = getGitHash()
-			hasPactsFromPactBroker(
-				mapOf("authentication" to listOf("Bearer", "wGb_AxvRRLCkrXgO_WrbWQ")),
-				"https://mzamorahappymoney.pactflow.io")
-		}
-	}
-	publish {
-		pactBrokerUrl = "https://mzamorahappymoney.pactflow.io"
-		pactBrokerToken = "wGb_AxvRRLCkrXgO_WrbWQ"
-		tags = listOf(getGitBranch(), "test", "prod")
-	}
-
-	broker {
-		pactBrokerUrl = "https://mzamorahappymoney.pactflow.io"
-		pactBrokerToken = "wGb_AxvRRLCkrXgO_WrbWQ"
-	}
-}
+//pact {
+//	serviceProviders {
+//		create("pactflow-example-provider-java-kafka") {
+//			providerVersion = getGitHash()
+//			hasPactsFromPactBroker(
+//				mapOf("authentication" to listOf("Bearer", "wGb_AxvRRLCkrXgO_WrbWQ")),
+//				"https://mzamorahappymoney.pactflow.io")
+//		}
+//	}
+//	publish {
+//		pactBrokerUrl = "https://mzamorahappymoney.pactflow.io"
+//		pactBrokerToken = "wGb_AxvRRLCkrXgO_WrbWQ"
+//		tags = listOf(getGitBranch(), "test", "prod")
+//	}
+//
+//	broker {
+//		pactBrokerUrl = "https://mzamorahappymoney.pactflow.io"
+//		pactBrokerToken = "wGb_AxvRRLCkrXgO_WrbWQ"
+//	}
+//}
 
