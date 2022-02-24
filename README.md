@@ -1,6 +1,14 @@
-# Example Java Kafka Producer
+#Kafka Producer Pact Contract Validator
 
-[![Build Status](https://travis-ci.com/pactflow/example-provider-java-kafka.svg?token=Kys1s4kjp8EWzwqKWwhy&branch=master)](https://travis-ci.com/pactflow/example-provider-java-kafka)
+##Running Locally
+`./gradlew bootRun` then start services in `kafka-custer.yml` separately
+or
+`make start` will start the app and required services
+
+##Verifying Pacts and Tests
+`./gradlew check` will verify any pacts available on https://mzamorahappymoney.pactflow.io/ for the provider and send the verification results back to the pactflow broker 
+
+##Other Information
 
 This is an example of a Java Spring Boot Kafka Producer that uses Pact, [Pactflow](https://pactflow.io) and Travis CI to ensure that it is compatible with the expectations its consumers have of it.
 

@@ -15,12 +15,6 @@ repositories {
 	mavenCentral()
 }
 
-//configurations {
-//  compileOnly {
-//    extendsFrom annotationProcessor
-//  }
-//}
-
 dependencies {
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
@@ -33,7 +27,6 @@ dependencies {
 	implementation("org.springframework.kafka:spring-kafka")
 	testImplementation("au.com.dius.pact.provider:junit5:4.1.34")
 	testImplementation("au.com.dius.pact.provider:junit5spring:4.1.34")
-//	testImplementation("au.com.dius:pact-jvm-provider-spring:4.0.10")
 
 	runtimeOnly("com.h2database:h2")
 	compileOnly("org.projectlombok:lombok")
@@ -43,20 +36,13 @@ dependencies {
 tasks {
 	test {
 		useJUnitPlatform()
-//		systemProperty("pactbroker.host", "mzamorahappymoney.pactflow.io")
+
 		if (environment["pactPublishResults"] == "true" || true) {
 			systemProperty("pact.provider.version", getGitHash())
 			systemProperty("pact.provider.tag", "${getGitBranch()}, test, prod" )
 			systemProperty("pact.verifier.publishResults", "true")
 		}
 	}
-
-//	val copyPacts by creating(Copy::class) {
-//		description = "Copies the generated Pact json file to the provider resources directory"
-//
-//		from("/Users/mzamora/projects/pactio/example-consumer-java-kafka/build/pacts")
-//		into("../provider/src/test/resources/pacts/")
-//	}
 }
 
 
