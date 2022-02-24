@@ -1,5 +1,3 @@
-import au.com.dius.pact.provider.gradle.PactBrokerConsumerConfig.Companion.latestTags
-
 plugins {
 	id("org.springframework.boot") version ("2.5.3")
 	id("io.spring.dependency-management") version ("1.0.11.RELEASE")
@@ -24,7 +22,7 @@ repositories {
 //}
 
 dependencies {
-	testImplementation("au.com.dius:pact-jvm-provider-junit5:4.0.10")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(group= "org.junit.vintage",module= "junit-vintage-engine")
 	}
@@ -33,8 +31,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.kafka:spring-kafka")
-	testImplementation("au.com.dius.pact.provider:junit5spring:4.3.2")
-	testImplementation("au.com.dius:pact-jvm-provider-spring:4.0.10")
+	testImplementation("au.com.dius:pact-jvm-provider-junit5:4.0.10")
+	testImplementation("au.com.dius.pact.provider:junit5spring:4.3.5")
+//	testImplementation("au.com.dius:pact-jvm-provider-spring:4.0.10")
 
 	runtimeOnly("com.h2database:h2")
 	compileOnly("org.projectlombok:lombok")
@@ -44,9 +43,9 @@ dependencies {
 tasks {
 	test {
 		useJUnitPlatform()
-
+//		systemProperty("pactbroker.host", "mzamorahappymoney.pactflow.io")
 		if (environment["pactPublishResults"] == "true" || true) {
-			environment("pact.provider.version", getGitHash())
+			systemProperty("pact.provider.version", getGitHash())
 			systemProperty("pact.provider.tag", getGitBranch())
 			systemProperty("pact.verifier.publishResults", "true")
 		}
@@ -86,19 +85,22 @@ fun getGitBranch(): String {
 
 pact {
 	serviceProviders {
-//		create("provider1") {
-//
-//			providerVersion = getGitHash()
-//			hasPactsFromPactBroker(
-//				mapOf("authentication" to listOf("Bearer", "wGb_AxvRRLCkrXgO_WrbWQ")),
-//				"mzamorahappymoney.pactflow.io")
-////			var tags = listOf(getGitBranch(), "test", "prod")
-//		}
+		create("pactflow-example-provider-java-kafka") {
+			providerVersion = getGitHash()
+			hasPactsFromPactBroker(
+				mapOf("authentication" to listOf("Bearer", "wGb_AxvRRLCkrXgO_WrbWQ")),
+				"https://mzamorahappymoney.pactflow.io")
+		}
 	}
 	publish {
 		pactBrokerUrl = "https://mzamorahappymoney.pactflow.io"
 		pactBrokerToken = "wGb_AxvRRLCkrXgO_WrbWQ"
 		tags = listOf(getGitBranch(), "test", "prod")
+	}
+
+	broker {
+		pactBrokerUrl = "https://mzamorahappymoney.pactflow.io"
+		pactBrokerToken = "wGb_AxvRRLCkrXgO_WrbWQ"
 	}
 }
 

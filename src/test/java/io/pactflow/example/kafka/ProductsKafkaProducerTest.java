@@ -4,32 +4,37 @@ import au.com.dius.pact.core.model.Interaction;
 import au.com.dius.pact.core.model.Pact;
 import au.com.dius.pact.provider.MessageAndMetadata;
 import au.com.dius.pact.provider.PactVerifyProvider;
-import au.com.dius.pact.provider.junit.Provider;
-import au.com.dius.pact.provider.junit.loader.PactBroker;
-import au.com.dius.pact.provider.junit.loader.PactBrokerAuth;
+
 import au.com.dius.pact.provider.junit5.AmpqTestTarget;
 import au.com.dius.pact.provider.junit5.PactVerificationContext;
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider;
+import au.com.dius.pact.provider.junitsupport.Provider;
+import au.com.dius.pact.provider.junitsupport.loader.PactBroker;
+import au.com.dius.pact.provider.junitsupport.loader.VersionSelector;
+import au.com.dius.pact.provider.spring.junit5.PactVerificationSpringProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.Message;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.HashMap;
 
+//@ExtendWith(PactVerificationSpringProvider.class)
+@ExtendWith(SpringExtension.class)
 @Provider("pactflow-example-provider-java-kafka")
-@PactBroker(scheme = "https", host = "${PACT_BROKER_HOST}", tags = { "master", "test", "prod" }, authentication = @PactBrokerAuth(token = "${PACT_BROKER_TOKEN}"))
+@PactBroker(consumerVersionSelectors={ @VersionSelector(tag = "master, prod, test")})
+@SpringBootTest()
 public class ProductsKafkaProducerTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(ProductsKafkaProducerTest.class);
 
-  @TestTemplate
-  @ExtendWith(PactVerificationInvocationContextProvider.class)
-  void testTemplate(Pact pact, Interaction interaction, PactVerificationContext context) {
-    context.verifyInteraction();
-  }
+  @Value("${pactbroker.host}")
+  String testName = "";
 
   @BeforeEach
   void before(PactVerificationContext context) {
@@ -42,6 +47,13 @@ public class ProductsKafkaProducerTest {
         System.getenv("TRAVIS_BRANCH") == null ? "" : System.getenv("TRAVIS_BRANCH"));
     System.setProperty("pact.verifier.publishResults",
         System.getenv("PACT_BROKER_PUBLISH_VERIFICATION_RESULTS") == null ? "false" : "true");
+  }
+
+  @TestTemplate
+//  @ExtendWith(PactVerificationInvocationContextProvider.class)
+  @ExtendWith(PactVerificationSpringProvider.class)
+  void testTemplate(PactVerificationContext context) {
+    context.verifyInteraction();
   }
 
   @PactVerifyProvider("a product event update")

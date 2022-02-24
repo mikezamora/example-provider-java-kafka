@@ -1,0 +1,6 @@
+pactbroker:
+  host: mzamorahappymoney.pactflow.io
+  url: https://mzamorahappymoney.pactflow.io
+  auth:
+    scheme:
+    token: "wGb_AxvRRLCkrXgO_WrbWQ"
